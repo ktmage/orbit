@@ -1,0 +1,122 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/core/dependency"
+
+import {
+  "ktmage/orbit/core/identity",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn resolve(ScopeTree, ProviderIndex, @identity.ScopeId, Array[Requirement], (@identity.InstanceId, @identity.KeyId) -> Bool) -> Resolution
+
+pub fn stop_order(Array[@identity.InstanceId], Array[Edge]) -> Array[@identity.InstanceId] raise DependencyCycle
+
+pub fn topological_order(Array[@identity.InstanceId], Array[Edge]) -> Array[@identity.InstanceId] raise DependencyCycle
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror DependencyCycle {
+  DependencyCycle(Array[@identity.InstanceId])
+}
+pub fn DependencyCycle::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug)
+pub(all) suberror ProviderError {
+  ProviderConflict(@identity.ScopeId, @identity.KeyId, @identity.InstanceId)
+}
+pub fn ProviderError::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug)
+pub(all) suberror ScopeError {
+  UnknownScope(@identity.ScopeId)
+  ClosedScope(@identity.ScopeId)
+}
+pub fn ScopeError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct DependencyGraph {
+  // private fields
+}
+pub fn DependencyGraph::affected_by(Self, ScopeTree, @identity.ScopeId, @identity.KeyId) -> Array[@identity.InstanceId]
+pub fn DependencyGraph::consumers_of(Self, @identity.InstanceId) -> Array[@identity.InstanceId]
+pub fn DependencyGraph::copy(Self) -> Self
+pub fn DependencyGraph::new() -> Self
+pub fn DependencyGraph::ownership_edges(Self, ScopeTree) -> Array[Edge]
+pub fn DependencyGraph::plan(Self, @identity.InstanceId, @identity.ScopeId, Array[Requirement]) -> Unit
+pub fn DependencyGraph::planned_edges(Self, ScopeTree, ProviderIndex) -> Array[Edge]
+pub fn DependencyGraph::put(Self, @identity.InstanceId, @identity.ScopeId, Array[Requirement]) -> Unit
+pub fn DependencyGraph::remove(Self, @identity.InstanceId) -> Unit
+pub fn DependencyGraph::select(Self, @identity.InstanceId, Array[Selection]) -> Unit
+pub fn DependencyGraph::selected_edges(Self) -> Array[Edge]
+pub fn DependencyGraph::validate(Self, ScopeTree, ProviderIndex) -> Unit raise DependencyCycle
+pub fn DependencyGraph::waiting_for(Self, @identity.KeyId) -> Array[@identity.InstanceId]
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Edge {
+  before : @identity.InstanceId
+  after : @identity.InstanceId
+}
+pub fn Edge::equal(Self, Self) -> Bool
+pub fn Edge::not_equal(Self, Self) -> Bool
+pub fn Edge::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Owner {
+  instance : @identity.InstanceId
+  activation : @identity.ActivationId
+}
+pub fn Owner::equal(Self, Self) -> Bool
+pub fn Owner::not_equal(Self, Self) -> Bool
+pub fn Owner::to_repr(Self) -> @debug.Repr
+
+pub struct ProviderIndex {
+  // private fields
+}
+pub fn ProviderIndex::copy(Self) -> Self
+pub fn ProviderIndex::get(Self, @identity.ScopeId, @identity.KeyId) -> @identity.InstanceId?
+pub fn ProviderIndex::new() -> Self
+pub fn ProviderIndex::release(Self, @identity.InstanceId) -> Unit
+pub fn ProviderIndex::reserve(Self, @identity.ScopeId, @identity.InstanceId, Array[@identity.KeyId]) -> Unit raise ProviderError
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Requirement {
+  key : @identity.KeyId
+  required : Bool
+}
+pub fn Requirement::equal(Self, Self) -> Bool
+pub fn Requirement::not_equal(Self, Self) -> Bool
+pub fn Requirement::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Resolution {
+  selections : Array[Selection]
+  missing : Array[@identity.KeyId]
+}
+
+pub struct ScopeTree {
+  // private fields
+}
+pub fn ScopeTree::add(Self, @identity.ScopeId, owner? : Owner) -> @identity.ScopeId raise ScopeError
+pub fn ScopeTree::ancestors(Self, @identity.ScopeId) -> Array[@identity.ScopeId]
+pub fn ScopeTree::close(Self, @identity.ScopeId) -> Unit raise ScopeError
+pub fn ScopeTree::contains(Self, @identity.ScopeId) -> Bool
+pub fn ScopeTree::descendants(Self, @identity.ScopeId) -> Array[@identity.ScopeId]
+pub fn ScopeTree::forget(Self, @identity.ScopeId) -> Unit
+pub fn ScopeTree::is_closing(Self, @identity.ScopeId) -> Bool
+pub fn ScopeTree::is_within(Self, @identity.ScopeId, @identity.ScopeId) -> Bool
+pub fn ScopeTree::new() -> Self
+pub fn ScopeTree::owner(Self, @identity.ScopeId) -> Owner?
+pub fn ScopeTree::parent(Self, @identity.ScopeId) -> @identity.ScopeId?
+pub fn ScopeTree::root(Self) -> @identity.ScopeId
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Selection {
+  key : @identity.KeyId
+  provider : @identity.InstanceId?
+}
+pub fn Selection::equal(Self, Self) -> Bool
+pub fn Selection::not_equal(Self, Self) -> Bool
+pub fn Selection::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

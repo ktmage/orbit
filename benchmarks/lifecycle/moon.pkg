@@ -1,0 +1,14 @@
+import {
+  "ktmage/orbit/core/runtime",
+  "ktmage/orbit/core/service",
+  "ktmage/orbit/core/event",
+  "ktmage/orbit/adapters/async_driver",
+  "moonbitlang/core/bench",
+  "moonbitlang/async",
+}
+
+pkgtype(kind: "executable")
+
+options(
+  targets: { "memory_js.mbt": [ "js" ], "memory_wasm.mbt": [ "wasm" ] },
+)

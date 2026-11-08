@@ -1,0 +1,7 @@
+import {
+  "ktmage/orbit/core/identity",
+}
+
+import {
+  "ktmage/orbit/core/identity",
+} for "test"

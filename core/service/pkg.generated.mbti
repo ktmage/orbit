@@ -1,0 +1,79 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/core/service"
+
+import {
+  "ktmage/orbit/core/identity",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror BindingError {
+  DuplicateValue(@identity.KeyId)
+  MissingValue(@identity.KeyId)
+  ForeignRuntime
+  RetainedValue(@identity.KeyId)
+  ReleasedReference
+  CallAccessRequired
+}
+pub fn BindingError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct Binding {
+  // private fields
+}
+pub fn Binding::provider(Self) -> Provider
+pub fn[T] Binding::read(Self, ServiceKey[T]) -> T raise BindingError
+pub fn[T] Binding::read_with(Self, ServiceKey[T], CallAccess) -> T raise
+pub fn Binding::release(Self) -> Unit
+
+pub struct CallAccess {
+  // private fields
+}
+pub fn CallAccess::is_cleanup(Self) -> Bool
+pub fn CallAccess::is_valid(Self) -> Bool
+pub fn CallAccess::new(Bool, () -> Bool) -> Self
+
+#derive(Eq, @debug.Debug)
+pub(all) struct Provider {
+  runtime : @identity.RuntimeId
+  scope : @identity.ScopeId
+  instance : @identity.InstanceId
+  activation : @identity.ActivationId
+}
+pub fn Provider::equal(Self, Self) -> Bool
+pub fn Provider::not_equal(Self, Self) -> Bool
+pub fn Provider::to_repr(Self) -> @debug.Repr
+
+pub struct ServiceBindings {
+  // private fields
+}
+pub fn ServiceBindings::bind(Self, @identity.KeyId, Provider) -> Binding raise BindingError
+pub fn ServiceBindings::keys(Self, @identity.ActivationId) -> Array[@identity.KeyId]
+pub fn ServiceBindings::new(@identity.RuntimeId) -> Self
+pub fn[T] ServiceBindings::pin(Self, ServiceKey[T], Provider) -> SlotRef[T] raise BindingError
+pub fn ServiceBindings::publish(Self, @identity.ActivationId) -> Unit
+pub fn ServiceBindings::release(Self, @identity.ActivationId) -> Unit raise BindingError
+pub fn[T] ServiceBindings::stage(Self, ServiceKey[T], Provider, T) -> Unit raise BindingError
+pub fn[T] ServiceBindings::stage_with(Self, ServiceKey[T], Provider, (CallAccess) -> T raise) -> Unit raise BindingError
+pub fn ServiceBindings::withdraw(Self, @identity.ActivationId) -> Unit
+
+pub struct ServiceKey[T] {
+  // private fields
+}
+pub fn[T] ServiceKey::id(Self[T]) -> @identity.KeyId
+pub fn[T] ServiceKey::name(Self[T]) -> String
+pub fn[T] ServiceKey::new(String) -> Self[T]
+
+pub struct SlotRef[T] {
+  // private fields
+}
+pub fn[T] SlotRef::provider(Self[T]) -> Provider
+pub fn[T] SlotRef::read(Self[T]) -> T raise BindingError
+pub fn[T] SlotRef::release(Self[T]) -> Unit
+
+// Type aliases
+
+// Traits

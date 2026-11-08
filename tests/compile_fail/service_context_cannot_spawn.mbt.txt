@@ -1,0 +1,3 @@
+pub fn service_call(context : @runtime.ServiceContext) -> Unit raise {
+  ignore(context.spawn(() => ()))
+}

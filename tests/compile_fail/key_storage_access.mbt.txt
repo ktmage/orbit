@@ -1,0 +1,3 @@
+pub fn bypass_lifecycle(key : @service.ServiceKey[Int]) -> Unit {
+  key.slots.clear()
+}

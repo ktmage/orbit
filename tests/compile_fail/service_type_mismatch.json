@@ -1,0 +1,5 @@
+{
+  "package": "import {\n  \"ktmage/orbit/core/service\",\n}\n",
+  "valid_source": "pub fn correct_value(bindings : @service.ServiceBindings, provider : @service.Provider) -> Unit raise {\n  let key : @service.ServiceKey[Int] = @service.ServiceKey::new(\"clock\")\n  bindings.stage(key, provider, 12)\n}\n",
+  "errors": [{"code": 4014, "line": 3}]
+}

@@ -1,0 +1,294 @@
+{
+  "measured_at": "2026-11-08T04:28:38.107632+00:00",
+  "source_sha256": "732ce807bff90887c404d7f22b47e7581475cc0b34aa5e92bddb5f0937483860",
+  "system": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "compiler": "moon 0.1.20261104 (940aa18 2026-11-04) ~/.local/share/mise/installs/http-moonbit/0.10.20+65efd5b93/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) ~/.local/share/mise/installs/http-moonbit/0.10.20+65efd5b93/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) ~/.local/share/mise/installs/http-moonbit/0.10.20+65efd5b93/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "runs": [
+    {
+      "target": "js",
+      "host": "v26.13.0",
+      "memory_kind": "node_heap_after_gc",
+      "measurements": [
+        {
+          "metric": "register_chain",
+          "count": 10,
+          "elapsed_us": 37384.167,
+          "plugin_us": 24.75000000000449,
+          "outside_plugin_us": 37359.416999999994
+        },
+        {
+          "metric": "emit",
+          "count": 10,
+          "elapsed_us": 223.5420000000019,
+          "plugin_us": 2.0420000000100913,
+          "outside_plugin_us": 221.49999999999181
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 10,
+          "elapsed_us": 198.87500000000102
+        },
+        {
+          "metric": "replace_chain",
+          "count": 10,
+          "elapsed_us": 30165.917,
+          "plugin_us": 9.83599999997864,
+          "outside_plugin_us": 30156.081000000024
+        },
+        {
+          "metric": "close_chain",
+          "count": 10,
+          "elapsed_us": 16670.208000000002,
+          "plugin_us": 6.083000000003835,
+          "outside_plugin_us": 16664.125
+        },
+        {
+          "metric": "register_chain",
+          "count": 50,
+          "elapsed_us": 167218.62499999997,
+          "plugin_us": 21.209999999967977,
+          "outside_plugin_us": 167197.415
+        },
+        {
+          "metric": "emit",
+          "count": 50,
+          "elapsed_us": 233.99999999998045,
+          "plugin_us": 5.877000000282351,
+          "outside_plugin_us": 228.1229999996981
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 50,
+          "elapsed_us": 195.04100000000335
+        },
+        {
+          "metric": "replace_chain",
+          "count": 50,
+          "elapsed_us": 168773.33400000003,
+          "plugin_us": 46.208000000035554,
+          "outside_plugin_us": 168727.126
+        },
+        {
+          "metric": "close_chain",
+          "count": 50,
+          "elapsed_us": 79310,
+          "plugin_us": 8.414000000186661,
+          "outside_plugin_us": 79301.5859999998
+        },
+        {
+          "metric": "register_chain",
+          "count": 100,
+          "elapsed_us": 349803.70800000004,
+          "plugin_us": 27.789999999868087,
+          "outside_plugin_us": 349775.9180000002
+        },
+        {
+          "metric": "emit",
+          "count": 100,
+          "elapsed_us": 77.541999999994,
+          "plugin_us": 10.961999999722138,
+          "outside_plugin_us": 66.58000000027187
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 100,
+          "elapsed_us": 35.20899999989524
+        },
+        {
+          "metric": "replace_chain",
+          "count": 100,
+          "elapsed_us": 333770.2500000002,
+          "plugin_us": 30.904999999393112,
+          "outside_plugin_us": 333739.3450000008
+        },
+        {
+          "metric": "close_chain",
+          "count": 100,
+          "elapsed_us": 167858.1670000001,
+          "plugin_us": 21.793000001480323,
+          "outside_plugin_us": 167836.3739999986
+        },
+        {
+          "metric": "plugin_wait",
+          "count": 1,
+          "elapsed_us": 25426.582999999937,
+          "plugin_us": 22374.29199999997,
+          "outside_plugin_us": 3052.2909999999683
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 100,
+          "memory_bytes": 8211424
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 200,
+          "memory_bytes": 7813600
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 300,
+          "memory_bytes": 7667760
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 400,
+          "memory_bytes": 7694376
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 500,
+          "memory_bytes": 7719984
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 600,
+          "memory_bytes": 7725544
+        }
+      ]
+    },
+    {
+      "target": "wasm",
+      "host": "moonrun 0.1.20261104 (940aa18 2026-11-04)",
+      "memory_kind": "wasm_linear_memory_capacity",
+      "measurements": [
+        {
+          "metric": "register_chain",
+          "count": 10,
+          "elapsed_us": 6440.75,
+          "plugin_us": 15.709,
+          "outside_plugin_us": 6425.041
+        },
+        {
+          "metric": "emit",
+          "count": 10,
+          "elapsed_us": 106.542,
+          "plugin_us": 4.416,
+          "outside_plugin_us": 102.126
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 10,
+          "elapsed_us": 99.417
+        },
+        {
+          "metric": "replace_chain",
+          "count": 10,
+          "elapsed_us": 3840.833,
+          "plugin_us": 17.332999999999995,
+          "outside_plugin_us": 3823.5
+        },
+        {
+          "metric": "close_chain",
+          "count": 10,
+          "elapsed_us": 1572.0829999999999,
+          "plugin_us": 6.166,
+          "outside_plugin_us": 1565.917
+        },
+        {
+          "metric": "register_chain",
+          "count": 50,
+          "elapsed_us": 32324.25,
+          "plugin_us": 39.708999999999996,
+          "outside_plugin_us": 32284.541
+        },
+        {
+          "metric": "emit",
+          "count": 50,
+          "elapsed_us": 88.708,
+          "plugin_us": 21.79499999999999,
+          "outside_plugin_us": 66.91300000000001
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 50,
+          "elapsed_us": 57.166000000000004
+        },
+        {
+          "metric": "replace_chain",
+          "count": 50,
+          "elapsed_us": 28843.834,
+          "plugin_us": 73.96500000000002,
+          "outside_plugin_us": 28769.869
+        },
+        {
+          "metric": "close_chain",
+          "count": 50,
+          "elapsed_us": 9203.25,
+          "plugin_us": 37.204999999999984,
+          "outside_plugin_us": 9166.045
+        },
+        {
+          "metric": "register_chain",
+          "count": 100,
+          "elapsed_us": 95816.291,
+          "plugin_us": 95.67099999999999,
+          "outside_plugin_us": 95720.62
+        },
+        {
+          "metric": "emit",
+          "count": 100,
+          "elapsed_us": 110.167,
+          "plugin_us": 77.542,
+          "outside_plugin_us": 32.625
+        },
+        {
+          "metric": "emit_first_receiver",
+          "count": 100,
+          "elapsed_us": 11.292
+        },
+        {
+          "metric": "replace_chain",
+          "count": 100,
+          "elapsed_us": 101347.417,
+          "plugin_us": 563.6219999999998,
+          "outside_plugin_us": 100783.795
+        },
+        {
+          "metric": "close_chain",
+          "count": 100,
+          "elapsed_us": 32804.75,
+          "plugin_us": 139.25300000000001,
+          "outside_plugin_us": 32665.497
+        },
+        {
+          "metric": "plugin_wait",
+          "count": 1,
+          "elapsed_us": 21474.334000000003,
+          "plugin_us": 21235.375,
+          "outside_plugin_us": 238.95900000000256
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 100,
+          "memory_bytes": 1048576
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 200,
+          "memory_bytes": 1048576
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 300,
+          "memory_bytes": 1048576
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 400,
+          "memory_bytes": 1048576
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 500,
+          "memory_bytes": 1048576
+        },
+        {
+          "metric": "repeated_cycles_memory",
+          "count": 600,
+          "memory_bytes": 1048576
+        }
+      ]
+    }
+  ]
+}

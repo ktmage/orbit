@@ -1,0 +1,12 @@
+import {
+  "ktmage/orbit/core/identity",
+  "ktmage/orbit/core/dependency",
+  "ktmage/orbit/core/lifecycle",
+  "ktmage/orbit/core/service",
+  "ktmage/orbit/core/event",
+  "moonbitlang/async",
+}
+
+import {
+  "ktmage/orbit/adapters/async_driver",
+} for "wbtest"

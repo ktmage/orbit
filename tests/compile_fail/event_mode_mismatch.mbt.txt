@@ -1,0 +1,3 @@
+pub fn wrong_mode(key : @event.BailKey[Int, Int], dispatcher : @event.EventDispatcher, scope : @identity.ScopeId) -> Unit {
+  ignore(@event.EmitKey::emit(key, dispatcher, scope, 0))
+}

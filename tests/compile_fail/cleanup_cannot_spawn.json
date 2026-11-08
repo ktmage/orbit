@@ -1,0 +1,10 @@
+{
+  "package": "import { \"ktmage/orbit/core/runtime\", }\n",
+  "valid_source": "pub fn cleanup(_context : @runtime.CleanupContext) -> Unit {\n  ()\n}\n",
+  "errors": [
+    {
+      "code": 4015,
+      "line": 2
+    }
+  ]
+}

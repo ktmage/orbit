@@ -1,0 +1,5 @@
+{
+  "package": "import {\n  \"ktmage/orbit/core/event\",\n  \"ktmage/orbit/core/identity\",\n}\n",
+  "valid_source": "pub fn correct_mode(key : @event.EmitKey[Int, Int], dispatcher : @event.EventDispatcher, scope : @identity.ScopeId) -> Unit {\n  ignore(@event.EmitKey::emit(key, dispatcher, scope, 0))\n}\n",
+  "errors": [{"code": 4014, "line": 2}]
+}

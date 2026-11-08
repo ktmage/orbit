@@ -1,0 +1,3 @@
+pub fn install(scope : @runtime.Scope, plugin : @runtime.Plugin[Int]) -> Unit raise {
+  ignore(scope.install(plugin, "42"))
+}

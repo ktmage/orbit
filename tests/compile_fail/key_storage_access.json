@@ -1,0 +1,5 @@
+{
+  "package": "import {\n  \"ktmage/orbit/core/service\",\n}\n",
+  "valid_source": "pub fn observe_identity(key : @service.ServiceKey[Int]) -> Unit {\n  ignore(key.id())\n}\n",
+  "errors": [{"code": 4091, "line": 2}]
+}

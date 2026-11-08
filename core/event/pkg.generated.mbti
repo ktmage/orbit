@@ -1,0 +1,108 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/core/event"
+
+import {
+  "ktmage/orbit/core/identity",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror DispatchError {
+  DispatchCancelled
+  NextAlreadyCalled
+  NextAfterReturn
+  NextNotAwaited
+}
+pub fn DispatchError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct BailKey[I, O] {
+  // private fields
+}
+pub fn[I, O] BailKey::bail(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> Decision[O] raise
+pub fn[I, O] BailKey::id(Self[I, O]) -> @identity.KeyId
+pub fn[I, O] BailKey::name(Self[I, O]) -> String
+pub fn[I, O] BailKey::new(String) -> Self[I, O]
+
+#derive(Eq, @debug.Debug)
+pub(all) enum Decision[T] {
+  Continue
+  Stop(T)
+}
+pub fn[T : Eq] Decision::equal(Self[T], Self[T]) -> Bool
+pub fn[T : Eq] Decision::not_equal(Self[T], Self[T]) -> Bool
+pub fn[T : @debug.Debug] Decision::to_repr(Self[T]) -> @debug.Repr
+
+pub struct EmitKey[I, O] {
+  // private fields
+}
+pub fn[I, O] EmitKey::emit(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> Array[Outcome[O]]
+pub fn[I, O] EmitKey::id(Self[I, O]) -> @identity.KeyId
+pub fn[I, O] EmitKey::name(Self[I, O]) -> String
+pub fn[I, O] EmitKey::new(String) -> Self[I, O]
+
+pub struct EventDispatcher {
+  // private fields
+}
+pub fn EventDispatcher::new() -> Self
+pub fn[I, O] EventDispatcher::on_bail(Self, BailKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> Decision[O] raise) -> Subscription
+pub fn[I, O] EventDispatcher::on_emit(Self, EmitKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> O raise) -> Subscription
+pub fn[I, O] EventDispatcher::on_parallel(Self, ParallelKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> O) -> Subscription
+pub fn[I, O] EventDispatcher::on_serial(Self, SerialKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> Decision[O]) -> Subscription
+pub fn[I, O] EventDispatcher::on_waterfall(Self, WaterfallKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I, async (I) -> O) -> O, map_error? : (Error) -> Error) -> Subscription
+pub fn EventDispatcher::publish(Self, @identity.ActivationId) -> Unit
+pub fn EventDispatcher::remove(Self, @identity.ActivationId) -> Unit
+pub fn EventDispatcher::withdraw(Self, @identity.ActivationId) -> Unit
+
+pub struct Invocation {
+  // private fields
+}
+pub fn Invocation::new(async (async () -> Unit, () -> Unit) -> Unit) -> Self
+
+#derive(@debug.Debug)
+pub(all) enum Outcome[T] {
+  Success(T)
+  Failed(Error)
+  Cancelled
+  Skipped
+}
+pub fn[T : @debug.Debug] Outcome::to_repr(Self[T]) -> @debug.Repr
+
+pub struct ParallelKey[I, O] {
+  // private fields
+}
+pub fn[I, O] ParallelKey::id(Self[I, O]) -> @identity.KeyId
+pub fn[I, O] ParallelKey::name(Self[I, O]) -> String
+pub fn[I, O] ParallelKey::new(String) -> Self[I, O]
+pub async fn[I, O] ParallelKey::parallel(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> Array[Outcome[O]]
+pub fn[I, O] ParallelKey::prepare(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> async () -> Array[Outcome[O]]
+
+pub struct SerialKey[I, O] {
+  // private fields
+}
+pub fn[I, O] SerialKey::id(Self[I, O]) -> @identity.KeyId
+pub fn[I, O] SerialKey::name(Self[I, O]) -> String
+pub fn[I, O] SerialKey::new(String) -> Self[I, O]
+pub fn[I, O] SerialKey::prepare(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> async () -> Decision[O]
+pub async fn[I, O] SerialKey::serial(Self[I, O], EventDispatcher, @identity.ScopeId, I) -> Decision[O]
+
+pub struct Subscription {
+  // private fields
+}
+pub fn Subscription::remove(Self) -> Unit
+
+pub struct WaterfallKey[I, O] {
+  // private fields
+}
+pub fn[I, O] WaterfallKey::id(Self[I, O]) -> @identity.KeyId
+pub fn[I, O] WaterfallKey::name(Self[I, O]) -> String
+pub fn[I, O] WaterfallKey::new(String) -> Self[I, O]
+pub fn[I, O] WaterfallKey::prepare(Self[I, O], EventDispatcher, @identity.ScopeId, I, async (I) -> O) -> async () -> O
+pub async fn[I, O] WaterfallKey::waterfall(Self[I, O], EventDispatcher, @identity.ScopeId, I, async (I) -> O) -> O
+
+// Type aliases
+
+// Traits

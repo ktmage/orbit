@@ -1,0 +1,3 @@
+pub fn cleanup(context : @runtime.CleanupContext) -> Unit raise {
+  ignore(context.spawn(() => ()))
+}

@@ -1,0 +1,4 @@
+pub fn wrong_value(bindings : @service.ServiceBindings, provider : @service.Provider) -> Unit raise {
+  let key : @service.ServiceKey[Int] = @service.ServiceKey::new("clock")
+  bindings.stage(key, provider, "twelve")
+}

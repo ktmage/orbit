@@ -1,0 +1,30 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/test_support/manual_driver"
+
+import {
+  "ktmage/orbit/core/lifecycle",
+}
+
+// Values
+pub async fn[T] with_driver(async (ManualDriver) -> T) -> T
+
+// Errors
+
+// Types and methods
+pub struct Gate {
+  // private fields
+}
+pub fn Gate::new() -> Self
+pub fn Gate::open(Self) -> Unit
+pub async fn Gate::wait(Self) -> Unit
+
+pub struct ManualDriver {
+  // private fields
+}
+pub fn ManualDriver::driver(Self) -> @lifecycle.Driver
+pub fn ManualDriver::pending(Self) -> Int32
+pub fn ManualDriver::start_next(Self) -> Unit
+
+// Type aliases
+
+// Traits

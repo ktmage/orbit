@@ -1,0 +1,10 @@
+{
+  "package": "import { \"ktmage/orbit/core/runtime\", }\n",
+  "valid_source": "pub fn snapshot(handle : @runtime.Handle) -> @runtime.Snapshot {\n  handle.snapshot()\n}\n",
+  "errors": [
+    {
+      "code": 4091,
+      "line": 2
+    }
+  ]
+}

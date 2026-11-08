@@ -1,0 +1,5 @@
+{
+  "package": "import {\n  \"ktmage/orbit/core/identity\",\n}\n",
+  "valid_source": "pub fn fresh_identity() -> @identity.ActivationId {\n  @identity.ActivationId::fresh()\n}\n",
+  "errors": [{"code": 4036, "line": 2}, {"code": 4033, "line": 2}]
+}

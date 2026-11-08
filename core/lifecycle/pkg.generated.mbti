@@ -1,0 +1,89 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/core/lifecycle"
+
+import {
+  "ktmage/orbit/core/identity",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror AcquisitionCancelled
+pub fn AcquisitionCancelled::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug)
+pub(all) suberror CleanupFailed {
+  CleanupFailed(@identity.RegistrationId, Error)
+}
+pub fn CleanupFailed::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug)
+pub(all) suberror LifecycleError {
+  Stopping
+  CleanupInProgress
+}
+pub fn LifecycleError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct CancelHandle {
+  // private fields
+}
+pub fn CancelHandle::cancel(Self) -> Unit
+pub fn CancelHandle::new(() -> Unit) -> Self
+
+#derive(@debug.Debug)
+pub(all) enum Completion[T] {
+  Succeeded(T)
+  Failed(Error)
+  Cancelled
+}
+pub fn[T : @debug.Debug] Completion::to_repr(Self[T]) -> @debug.Repr
+
+pub struct Driver {
+  // private fields
+}
+pub fn Driver::new((async () -> Unit, (Completion[Unit]) -> Unit) -> CancelHandle) -> Self
+pub fn Driver::start(Self, async () -> Unit, (Completion[Unit]) -> Unit) -> CancelHandle
+
+pub struct EffectHandle {
+  // private fields
+}
+pub fn EffectHandle::id(Self) -> @identity.RegistrationId
+pub fn EffectHandle::unregister(Self) -> Unit raise LifecycleError
+
+pub struct EffectScope {
+  // private fields
+}
+pub async fn[T] EffectScope::acquire(Self, Driver, async () -> T, async (T) -> Unit) -> T
+pub fn EffectScope::add(Self, async () -> Unit) -> EffectHandle raise LifecycleError
+pub async fn EffectScope::cleanup(Self) -> Unit
+pub fn EffectScope::new() -> Self
+pub fn EffectScope::pending_cleanup(Self) -> Array[@identity.RegistrationId]
+pub fn EffectScope::request_stop(Self) -> Unit
+pub fn EffectScope::tasks(Self) -> TaskSet
+
+pub struct TaskHandle {
+  // private fields
+}
+pub fn TaskHandle::cancel(Self) -> Unit
+pub fn TaskHandle::cancel_requested(Self) -> Bool
+pub fn TaskHandle::on_cancel(Self, () -> Unit) -> Unit
+pub fn TaskHandle::result(Self) -> Completion[Unit]?
+pub async fn TaskHandle::wait(Self) -> Completion[Unit]
+
+pub struct TaskSet {
+  // private fields
+}
+pub fn TaskSet::cancel_all(Self) -> Unit
+pub fn TaskSet::is_stopping(Self) -> Bool
+pub async fn TaskSet::join(Self) -> Unit
+pub fn TaskSet::new() -> Self
+pub fn TaskSet::pending_count(Self) -> Int32
+pub async fn[T] TaskSet::run(Self, Driver, async () -> T, on_cancel? : () -> Unit) -> Completion[T]
+pub fn TaskSet::spawn(Self, Driver, async () -> Unit, completed? : (Completion[Unit]) -> Unit, is_cancellation? : (Error) -> Bool) -> TaskHandle raise LifecycleError
+
+// Type aliases
+
+// Traits

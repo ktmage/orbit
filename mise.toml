@@ -1,0 +1,18 @@
+[tools]
+actionlint = "1.7.12"
+node = "26.13.0"
+python = "3.15.2"
+
+[tools."http:moonbit"]
+version = "0.10.20+65efd5b93"
+bin_path = "bin"
+# バイナリのアーカイブだけでは標準ライブラリが揃わないため、公式インストーラーで補完する。
+postinstall = '''
+bash -c 'set -euo pipefail; export PATH="$MISE_TOOL_INSTALL_PATH/bin:$PATH"; curl -fsSL https://cli.moonbitlang.com/install/unix.sh | MOON_HOME="$MISE_TOOL_INSTALL_PATH" bash -s -- "$MISE_TOOL_VERSION"'
+'''
+
+[tools."http:moonbit".platforms]
+macos-arm64 = { url = "https://cli.moonbitlang.com/binaries/{{ version | replace(from='+', to='%2B') }}/moonbit-darwin-aarch64.tar.gz", checksum = "sha256:3ccd56479ba704a779178abe8731490edee9e57b3b90f5cef2252afef4fdf130" }
+
+[env]
+MOON_HOME = { value = "{{ tools['http:moonbit'].path }}", tools = true }

@@ -1,0 +1,8 @@
+import {
+  "ktmage/orbit/core/runtime",
+  "ktmage/orbit/core/service",
+  "ktmage/orbit/adapters/async_driver",
+  "moonbitlang/async",
+}
+
+pkgtype(kind: "executable")

@@ -1,0 +1,3 @@
+pub fn forge_identity() -> @identity.ActivationId {
+  { value: 1L }
+}

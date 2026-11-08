@@ -1,0 +1,10 @@
+{
+  "package": "import { \"ktmage/orbit/core/runtime\", }\n",
+  "valid_source": "pub fn install(scope : @runtime.Scope, plugin : @runtime.Plugin[Int]) -> Unit raise {\n  ignore(scope.install(plugin, 42))\n}\n",
+  "errors": [
+    {
+      "code": 4014,
+      "line": 2
+    }
+  ]
+}

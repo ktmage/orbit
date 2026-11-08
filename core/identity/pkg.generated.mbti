@@ -1,0 +1,127 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/core/identity"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct ActivationId {
+  // private fields
+}
+pub fn ActivationId::compare(Self, Self) -> Int32
+pub fn ActivationId::equal(Self, Self) -> Bool
+pub fn ActivationId::fresh() -> Self
+pub fn ActivationId::hash(Self) -> Int32
+pub fn ActivationId::hash_combine(Self, Hasher) -> Unit
+pub fn ActivationId::not_equal(Self, Self) -> Bool
+pub fn ActivationId::op_ge(Self, Self) -> Bool
+pub fn ActivationId::op_gt(Self, Self) -> Bool
+pub fn ActivationId::op_le(Self, Self) -> Bool
+pub fn ActivationId::op_lt(Self, Self) -> Bool
+pub fn ActivationId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct InstanceId {
+  // private fields
+}
+pub fn InstanceId::compare(Self, Self) -> Int32
+pub fn InstanceId::equal(Self, Self) -> Bool
+pub fn InstanceId::fresh() -> Self
+pub fn InstanceId::hash(Self) -> Int32
+pub fn InstanceId::hash_combine(Self, Hasher) -> Unit
+pub fn InstanceId::not_equal(Self, Self) -> Bool
+pub fn InstanceId::op_ge(Self, Self) -> Bool
+pub fn InstanceId::op_gt(Self, Self) -> Bool
+pub fn InstanceId::op_le(Self, Self) -> Bool
+pub fn InstanceId::op_lt(Self, Self) -> Bool
+pub fn InstanceId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct KeyId {
+  // private fields
+}
+pub fn KeyId::compare(Self, Self) -> Int32
+pub fn KeyId::equal(Self, Self) -> Bool
+pub fn KeyId::fresh() -> Self
+pub fn KeyId::hash(Self) -> Int32
+pub fn KeyId::hash_combine(Self, Hasher) -> Unit
+pub fn KeyId::not_equal(Self, Self) -> Bool
+pub fn KeyId::op_ge(Self, Self) -> Bool
+pub fn KeyId::op_gt(Self, Self) -> Bool
+pub fn KeyId::op_le(Self, Self) -> Bool
+pub fn KeyId::op_lt(Self, Self) -> Bool
+pub fn KeyId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct OperationId {
+  // private fields
+}
+pub fn OperationId::compare(Self, Self) -> Int32
+pub fn OperationId::equal(Self, Self) -> Bool
+pub fn OperationId::fresh() -> Self
+pub fn OperationId::hash(Self) -> Int32
+pub fn OperationId::hash_combine(Self, Hasher) -> Unit
+pub fn OperationId::not_equal(Self, Self) -> Bool
+pub fn OperationId::op_ge(Self, Self) -> Bool
+pub fn OperationId::op_gt(Self, Self) -> Bool
+pub fn OperationId::op_le(Self, Self) -> Bool
+pub fn OperationId::op_lt(Self, Self) -> Bool
+pub fn OperationId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct RegistrationId {
+  // private fields
+}
+pub fn RegistrationId::compare(Self, Self) -> Int32
+pub fn RegistrationId::equal(Self, Self) -> Bool
+pub fn RegistrationId::fresh() -> Self
+pub fn RegistrationId::hash(Self) -> Int32
+pub fn RegistrationId::hash_combine(Self, Hasher) -> Unit
+pub fn RegistrationId::not_equal(Self, Self) -> Bool
+pub fn RegistrationId::op_ge(Self, Self) -> Bool
+pub fn RegistrationId::op_gt(Self, Self) -> Bool
+pub fn RegistrationId::op_le(Self, Self) -> Bool
+pub fn RegistrationId::op_lt(Self, Self) -> Bool
+pub fn RegistrationId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct RuntimeId {
+  // private fields
+}
+pub fn RuntimeId::compare(Self, Self) -> Int32
+pub fn RuntimeId::equal(Self, Self) -> Bool
+pub fn RuntimeId::fresh() -> Self
+pub fn RuntimeId::hash(Self) -> Int32
+pub fn RuntimeId::hash_combine(Self, Hasher) -> Unit
+pub fn RuntimeId::not_equal(Self, Self) -> Bool
+pub fn RuntimeId::op_ge(Self, Self) -> Bool
+pub fn RuntimeId::op_gt(Self, Self) -> Bool
+pub fn RuntimeId::op_le(Self, Self) -> Bool
+pub fn RuntimeId::op_lt(Self, Self) -> Bool
+pub fn RuntimeId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
+pub struct ScopeId {
+  // private fields
+}
+pub fn ScopeId::compare(Self, Self) -> Int32
+pub fn ScopeId::equal(Self, Self) -> Bool
+pub fn ScopeId::fresh() -> Self
+pub fn ScopeId::hash(Self) -> Int32
+pub fn ScopeId::hash_combine(Self, Hasher) -> Unit
+pub fn ScopeId::not_equal(Self, Self) -> Bool
+pub fn ScopeId::op_ge(Self, Self) -> Bool
+pub fn ScopeId::op_gt(Self, Self) -> Bool
+pub fn ScopeId::op_le(Self, Self) -> Bool
+pub fn ScopeId::op_lt(Self, Self) -> Bool
+pub fn ScopeId::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

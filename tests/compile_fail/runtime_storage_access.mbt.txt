@@ -1,0 +1,3 @@
+pub fn clear(runtime : @runtime.Runtime) -> Unit {
+  runtime.instances.clear()
+}
