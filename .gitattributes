@@ -1,0 +1,3 @@
+moon.mod linguist-language=MoonBit
+moon.pkg linguist-language=MoonBit
+*.mbti linguist-language=MoonBit
