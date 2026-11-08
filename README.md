@@ -1,6 +1,6 @@
 # Orbit
 
-[![CI](https://github.com/ktmage/orbit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ktmage/orbit/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)](https://github.com/ktmage/orbit/releases)
+[![CI](https://github.com/ktmage/orbit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ktmage/orbit/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) ![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)
 
 Orbitは、MoonBit向けのプラグイン管理ライブラリです。アプリケーションの機能をプラグインとして登録し、依存関係に合わせて起動・停止します。
 
@@ -100,12 +100,6 @@ mise exec -- python3 tools/check_ci.py --target wasm
 各パッケージの`pkg.generated.mbti`に、公開する型と関数の一覧があります。
 
 通信やファイル操作、設定の保存は、Orbitを組み込むアプリケーションが実装します。Orbit自体が設定や診断情報を外部へ送信することはありません。
-
-## バージョン
-
-ライブラリのバージョンは[moon.mod](moon.mod)で管理し、公開したコードには同じ番号のGitタグを付けます。変更内容は[GitHub Releases](https://github.com/ktmage/orbit/releases)に記載します。実験段階のリリースには、GitHub上で`Pre-release`を付けます。
-
-MoonBitなどの開発ツールは[mise.toml](mise.toml)、依存するライブラリは[moon.mod](moon.mod)にバージョンを指定しています。
 
 ## ライセンス
 
