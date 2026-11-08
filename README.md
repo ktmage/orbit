@@ -34,7 +34,7 @@ JavaScriptとWebAssemblyへのコンパイルに対応しています。テス�
 [mise](https://mise.jdx.dev/getting-started.html)をインストールした環境で、リポジトリを取得して開発環境を準備します。
 
 ```sh
-git clone https://github.com/ktmage/orbit.git
+git clone git@github.com:ktmage/orbit.git
 cd orbit
 mise trust
 mise install
