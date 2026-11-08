@@ -107,12 +107,6 @@ mise exec -- python3 tools/check_ci.py --target wasm
 
 MoonBitなどの開発ツールは[mise.toml](mise.toml)、依存するライブラリは[moon.mod](moon.mod)にバージョンを指定しています。
 
-## 不具合の報告・変更の提案
-
-[Issues](https://github.com/ktmage/orbit/issues)で受け付けています。不具合の報告には、使用したGitタグまたはコミット、実行環境、再現するコード、期待した結果と実際の結果を添えてください。
-
-脆弱性を見つけた場合は、[セキュリティ上の問題の報告方法](.github/SECURITY.md)に従い、非公開で報告してください。
-
 ## ライセンス
 
 [MIT License](LICENSE)。著作権者はktmageです。
