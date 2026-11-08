@@ -1,10 +1,15 @@
 # Orbit
 
+[![CI](https://github.com/ktmage/orbit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ktmage/orbit/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)](https://github.com/ktmage/orbit/releases)
+
 Orbitは、MoonBit向けのプラグイン管理ライブラリです。アプリケーションの機能をプラグインとして登録し、依存関係に合わせて起動・停止します。
+
+> [!WARNING]
+> Orbitは実験段階のライブラリです。機能やドキュメントの整備が追いつかない場合があります。APIの安定性や継続的な保守は保証していません。
 
 プラグインがほかのプラグインへ公開する関数や値を、サービスとして扱います。Orbitは必要なサービスが揃うまで起動を待ち、設定や実装が変更されたときは、そのサービスを使うプラグインも停止してから起動し直します。
 
-Cordisのプラグイン管理の設計を参考にしています。特定のアプリケーションに依存しないため、コマンドラインツールやデスクトップアプリケーションなどに組み込めます。
+[Cordis](https://github.com/cordiverse/cordis)のプラグイン管理の設計を参考にしています。特定のアプリケーションに依存しないため、コマンドラインツールやデスクトップアプリケーションなどに組み込めます。
 
 ## 主な機能
 
@@ -26,9 +31,11 @@ JavaScriptとWebAssemblyへのコンパイルに対応しています。テス�
 
 [mise.toml](mise.toml)に、MoonBit、Node.js、Pythonなどのバージョンとインストール方法を定めています。この設定とCIは、Apple Siliconを搭載したmacOSを対象にしています。
 
-miseをインストールした環境で、Orbitリポジトリのルートディレクトリから次のコマンドを実行してください。
+[mise](https://mise.jdx.dev/getting-started.html)をインストールした環境で、リポジトリを取得して開発環境を準備します。
 
 ```sh
+git clone https://github.com/ktmage/orbit.git
+cd orbit
 mise trust
 mise install
 mise exec -- moon update
@@ -78,23 +85,6 @@ mise exec -- python3 tools/check_ci.py --target wasm
 
 [GitHub Actions](.github/workflows/ci.yml)では、コードをpushしたときや、プルリクエストを作成・更新したときに検査します。JavaScriptとWebAssemblyを別々のジョブで実行し、それぞれの結果を確認できます。手動実行にも対応しています。
 
-## 性能測定
-
-登録、イベントの呼び出し、プラグインの交換と停止にかかる時間を測定し、メモリ使用量とともに保存できます。
-
-```sh
-mise exec -- python3 tools/measure_runtime.py --output /tmp/orbit-measurement.json
-```
-
-メモリ量として記録する値は、実行環境によって異なります。
-
-| 実行環境 | 記録する値 |
-| --- | --- |
-| JavaScript | GC後のヒープ使用量 |
-| WebAssembly | 確保した線形メモリの容量 |
-
-WebAssemblyの値には、確保済みでも使っていない領域を含みます。そのため、この二つの値だけを比べて、どちらが少ないメモリで動作するかは判断できません。
-
 ## ソースコードの構成
 
 | ディレクトリ | 役割 |
@@ -110,3 +100,17 @@ WebAssemblyの値には、確保済みでも使っていない領域を含みま
 各パッケージの`pkg.generated.mbti`に、公開する型と関数の一覧があります。
 
 通信やファイル操作、設定の保存は、Orbitを組み込むアプリケーションが実装します。Orbit自体が設定や診断情報を外部へ送信することはありません。
+
+## バージョン
+
+ライブラリのバージョンは[moon.mod](moon.mod)で管理し、公開したコードには同じ番号のGitタグを付けます。変更内容は[GitHub Releases](https://github.com/ktmage/orbit/releases)に記載します。実験段階のリリースには、GitHub上で`Pre-release`を付けます。
+
+MoonBitなどの開発ツールは[mise.toml](mise.toml)、依存するライブラリは[moon.mod](moon.mod)にバージョンを指定しています。
+
+## 不具合の報告・変更の提案
+
+[Issues](https://github.com/ktmage/orbit/issues)で受け付けています。不具合の報告には、使用したGitタグまたはコミット、実行環境、再現するコード、期待した結果と実際の結果を添えてください。
+
+## ライセンス
+
+[MIT License](LICENSE)。著作権者はktmageです。
