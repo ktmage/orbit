@@ -126,7 +126,7 @@ pub fn DependencyGraph::affected_by(
   self.records
   .iter()
   .filter(fn(entry) {
-    tree.is_within(entry.1.scope, scope) &&
+    tree.realms(entry.1.scope, key).contains(tree.realm(scope, key)) &&
     entry.1.requirements.any(fn(r) { r.key == key })
   })
   .map(fn(entry) { entry.0 })

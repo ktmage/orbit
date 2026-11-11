@@ -18,13 +18,8 @@ pub async fn EffectScope::cleanup(self : EffectScope) -> Unit {
   @async.protect_from_cancel(() => {
     self.tasks.join()
     while self.cleanups.last() is Some(entry) {
-      if entry.run is Some(run) {
-        run() catch {
-          error => raise CleanupFailed(entry.id, error)
-        }
-        entry.run = None
-      }
-      ignore(self.cleanups.pop())
+      entry.dispose()
+      self.cleanups.retain(fn(candidate) { candidate.id != entry.id })
     }
   })
 }

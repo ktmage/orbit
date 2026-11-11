@@ -70,7 +70,7 @@ fn Runtime::snapshot(self : Runtime, instance : Instance) -> Snapshot {
     },
     pending_tasks: match activation {
       Some(a) =>
-        a.effects.tasks().pending_count() +
+        a.effects.pending_tasks() +
         a.incoming.pending_count() +
         a.cleanup_calls.pending_count()
       None => 0

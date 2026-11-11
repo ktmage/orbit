@@ -2,8 +2,8 @@
 async test "a child provider replaces only consumers in that scope and removal restores the ancestor" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
-    let sibling = runtime.root().child()
+    let child = runtime.root().shadow()
+    let sibling = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("clock")
     let first : Array[Int32] = []
     let second : Array[Int32] = []

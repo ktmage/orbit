@@ -7,7 +7,7 @@ fn Runtime::planned_providers(self : Runtime) -> @dependency.ProviderIndex {
     }
     for id, definition in pending.replacements {
       if self.instances.get(id) is Some(instance) && instance.desired {
-        projected.reserve(instance.scope, id, definition.provides) catch {
+        projected.reserve(self.scopes, instance.scope, id, definition.provides) catch {
           _ => abort("reserved replacement keys conflict")
         }
       }
@@ -75,7 +75,7 @@ fn Runtime::prepare_change(self : Runtime, change : Change) -> Unit {
   let projected = self.planned_providers()
   for id, definition in change.replacements {
     if self.instances.get(id) is Some(instance) && instance.desired {
-      projected.reserve(instance.scope, id, definition.provides) catch {
+      projected.reserve(self.scopes, instance.scope, id, definition.provides) catch {
         _ => ()
       }
     }

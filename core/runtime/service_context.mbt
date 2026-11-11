@@ -5,7 +5,7 @@ pub struct ServiceContext {
 }
 
 ///|
-fn ServiceContext::ensure(self : ServiceContext) -> Unit raise OrbitError {
+pub fn ServiceContext::ensure(self : ServiceContext) -> Unit raise OrbitError {
   guard self.access.is_valid() else { raise StaleContext }
   if self.access.is_cleanup() {
     CleanupContext::{ context: self.context, }.ensure()
@@ -56,4 +56,31 @@ pub fn[T] Context::provide_with(
     },
     access => factory({ context: self, access, }),
   )
+}
+
+///|
+pub fn ServiceContext::metadata(self : ServiceContext) -> Json raise {
+  self.ensure()
+  self.access.metadata()
+}
+
+///|
+pub fn[T] ServiceContext::effect(
+  self : ServiceContext,
+  apply : () -> (T, async () -> Unit) raise,
+) -> (T, async () -> Unit) raise {
+  self.ensure()
+  guard !self.access.is_cleanup() else {
+    raise ContractViolation("cleanup cannot create a service effect")
+  }
+  let inverse : Ref[(async () -> Unit)?] = Ref(None)
+  let (dispose, forget) = self.access.own(() => {
+    if inverse.val is Some(run) {
+      run()
+    }
+  })
+  errdefer forget()
+  let (value, release) = apply()
+  inverse.val = Some(release)
+  (value, dispose)
 }

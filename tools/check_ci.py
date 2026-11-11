@@ -21,7 +21,8 @@ def verify(target):
     execute(sys.executable, "tools/check_architecture.py")
     check_tests(target)
     check_compile_fail(target)
-    execute("moon", "run", "examples/clock", "--target", target, "--deny-warn")
+    for example in ("clock", "reload"):
+        execute("moon", "run", f"examples/{example}", "--target", target, "--deny-warn")
 
 
 if __name__ == "__main__":

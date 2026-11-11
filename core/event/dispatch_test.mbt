@@ -224,3 +224,33 @@ async test "parallel receiver cancellation leaves other receivers running" {
     })
   })
 }
+
+///|
+test "priorities and stable owners define an order even when unmanaged listeners are mixed" {
+  let dispatcher = @event.EventDispatcher::new()
+  let scope = @identity.ScopeId::fresh()
+  let key : @event.EmitKey[Unit, String] = @event.EmitKey::new("ordered")
+  let first = @identity.InstanceId::fresh()
+  let second = @identity.InstanceId::fresh()
+  let a = @identity.ActivationId::fresh()
+  let b = @identity.ActivationId::fresh()
+  let c = @identity.ActivationId::fresh()
+  dispatcher.set_owner(a, first)
+  dispatcher.set_owner(b, second)
+  ignore(dispatcher.on_emit(key, scope, b, _ => "second"))
+  dispatcher.publish(b)
+  ignore(dispatcher.on_emit(key, scope, c, _ => "unmanaged"))
+  dispatcher.publish(c)
+  ignore(dispatcher.on_emit(key, scope, a, _ => "first"))
+  ignore(dispatcher.on_emit(key, scope, a, _ => "priority", priority=-1))
+  dispatcher.publish(a)
+  let values = key
+    .emit(dispatcher, scope, ())
+    .map(fn(outcome) {
+      match outcome {
+        @event.Success(value) => value
+        _ => "failed"
+      }
+    })
+  assert_eq(values, ["priority", "first", "second", "unmanaged"])
+}

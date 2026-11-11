@@ -50,6 +50,7 @@ pub fn Driver::start(Self, async () -> Unit, (Completion[Unit]) -> Unit) -> Canc
 pub struct EffectHandle {
   // private fields
 }
+pub async fn EffectHandle::dispose(Self) -> Unit
 pub fn EffectHandle::id(Self) -> @identity.RegistrationId
 pub fn EffectHandle::unregister(Self) -> Unit raise LifecycleError
 
@@ -57,10 +58,12 @@ pub struct EffectScope {
   // private fields
 }
 pub async fn[T] EffectScope::acquire(Self, Driver, async () -> T, async (T) -> Unit) -> T
-pub fn EffectScope::add(Self, async () -> Unit) -> EffectHandle raise LifecycleError
+pub fn EffectScope::add(Self, async () -> Unit, stop? : () -> Unit) -> EffectHandle raise LifecycleError
+pub fn EffectScope::child(Self) -> (Self, EffectHandle) raise
 pub async fn EffectScope::cleanup(Self) -> Unit
 pub fn EffectScope::new() -> Self
 pub fn EffectScope::pending_cleanup(Self) -> Array[@identity.RegistrationId]
+pub fn EffectScope::pending_tasks(Self) -> Int32
 pub fn EffectScope::request_stop(Self) -> Unit
 pub fn EffectScope::tasks(Self) -> TaskSet
 

@@ -4,6 +4,7 @@ package "ktmage/orbit/core/service"
 import {
   "ktmage/orbit/core/identity",
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
@@ -17,6 +18,8 @@ pub(all) suberror BindingError {
   RetainedValue(@identity.KeyId)
   ReleasedReference
   CallAccessRequired
+  EffectAccessDenied
+  InvalidMetadata
 }
 pub fn BindingError::to_repr(Self) -> @debug.Repr
 
@@ -34,7 +37,9 @@ pub struct CallAccess {
 }
 pub fn CallAccess::is_cleanup(Self) -> Bool
 pub fn CallAccess::is_valid(Self) -> Bool
-pub fn CallAccess::new(Bool, () -> Bool) -> Self
+pub fn CallAccess::metadata(Self) -> @json.Json
+pub fn CallAccess::new(Bool, () -> Bool, metadata? : @json.Json, own? : (async () -> Unit) -> (async () -> Unit, () -> Unit) raise) -> Self
+pub fn CallAccess::own(Self, async () -> Unit) -> (async () -> Unit, () -> Unit) raise
 
 #derive(Eq, @debug.Debug)
 pub(all) struct Provider {
@@ -64,8 +69,16 @@ pub struct ServiceKey[T] {
   // private fields
 }
 pub fn[T] ServiceKey::id(Self[T]) -> @identity.KeyId
+pub fn[T] ServiceKey::metadata(Self[T], Array[@json.Json]) -> @json.Json raise
 pub fn[T] ServiceKey::name(Self[T]) -> String
-pub fn[T] ServiceKey::new(String) -> Self[T]
+pub fn[T] ServiceKey::new(String, initial_metadata? : @json.Json, merge? : (@json.Json, @json.Json) -> @json.Json raise) -> Self[T]
+pub fn[T] ServiceKey::realm(Self[T]) -> ServiceRealm[T]
+
+pub struct ServiceRealm[T] {
+  // private fields
+}
+pub fn[T] ServiceRealm::id(Self[T]) -> @identity.RealmId
+pub fn[T] ServiceRealm::key(Self[T]) -> @identity.KeyId
 
 pub struct SlotRef[T] {
   // private fields

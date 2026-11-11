@@ -30,8 +30,8 @@ pub fn resolve(
   let missing = []
   for requirement in requirements {
     let mut provider = None
-    for candidate_scope in tree.ancestors(scope) {
-      if providers.get(candidate_scope, requirement.key) is Some(candidate) &&
+    for realm in tree.realms(scope, requirement.key) {
+      if providers.get_realm(realm, requirement.key) is Some(candidate) &&
         available(candidate, requirement.key) {
         provider = Some(candidate)
         break

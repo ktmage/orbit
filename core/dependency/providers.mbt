@@ -7,7 +7,7 @@ pub(all) suberror ProviderError {
 ///|
 pub struct ProviderIndex {
   priv reservations : Map[
-    (@identity.ScopeId, @identity.KeyId),
+    (@identity.RealmId, @identity.KeyId),
     @identity.InstanceId,
   ]
 }
@@ -20,28 +20,45 @@ pub fn ProviderIndex::new() -> ProviderIndex {
 ///|
 pub fn ProviderIndex::reserve(
   self : ProviderIndex,
+  tree : ScopeTree,
   scope : @identity.ScopeId,
   instance : @identity.InstanceId,
   keys : Array[@identity.KeyId],
 ) -> Unit raise ProviderError {
   for key in keys {
-    if self.reservations.get((scope, key)) is Some(other) && other != instance {
+    if self.reservations.get((tree.realm(scope, key), key)) is Some(other) &&
+      other != instance {
       raise ProviderConflict(scope, key, other)
     }
   }
   self.release(instance)
   for key in keys {
-    self.reservations[(scope, key)] = instance
+    self.reservations[(tree.realm(scope, key), key)] = instance
   }
 }
 
 ///|
 pub fn ProviderIndex::get(
   self : ProviderIndex,
+  tree : ScopeTree,
   scope : @identity.ScopeId,
   key : @identity.KeyId,
 ) -> @identity.InstanceId? {
-  self.reservations.get((scope, key))
+  for realm in tree.realms(scope, key) {
+    if self.get_realm(realm, key) is Some(provider) {
+      return Some(provider)
+    }
+  }
+  None
+}
+
+///|
+pub fn ProviderIndex::get_realm(
+  self : ProviderIndex,
+  realm : @identity.RealmId,
+  key : @identity.KeyId,
+) -> @identity.InstanceId? {
+  self.reservations.get((realm, key))
 }
 
 ///|

@@ -4,6 +4,7 @@ package "ktmage/orbit/core/dependency"
 import {
   "ktmage/orbit/core/identity",
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
@@ -73,10 +74,11 @@ pub struct ProviderIndex {
   // private fields
 }
 pub fn ProviderIndex::copy(Self) -> Self
-pub fn ProviderIndex::get(Self, @identity.ScopeId, @identity.KeyId) -> @identity.InstanceId?
+pub fn ProviderIndex::get(Self, ScopeTree, @identity.ScopeId, @identity.KeyId) -> @identity.InstanceId?
+pub fn ProviderIndex::get_realm(Self, @identity.RealmId, @identity.KeyId) -> @identity.InstanceId?
 pub fn ProviderIndex::new() -> Self
 pub fn ProviderIndex::release(Self, @identity.InstanceId) -> Unit
-pub fn ProviderIndex::reserve(Self, @identity.ScopeId, @identity.InstanceId, Array[@identity.KeyId]) -> Unit raise ProviderError
+pub fn ProviderIndex::reserve(Self, ScopeTree, @identity.ScopeId, @identity.InstanceId, Array[@identity.KeyId]) -> Unit raise ProviderError
 
 #derive(Eq, @debug.Debug)
 pub(all) struct Requirement {
@@ -95,17 +97,21 @@ pub(all) struct Resolution {
 pub struct ScopeTree {
   // private fields
 }
-pub fn ScopeTree::add(Self, @identity.ScopeId, owner? : Owner) -> @identity.ScopeId raise ScopeError
+pub fn ScopeTree::add(Self, @identity.ScopeId, owner? : Owner, isolation? : Array[(@identity.KeyId, @identity.RealmId)], intercepts? : Array[(@identity.KeyId, @json.Json)], isolate_events? : Bool, shadow? : Bool) -> @identity.ScopeId raise ScopeError
 pub fn ScopeTree::ancestors(Self, @identity.ScopeId) -> Array[@identity.ScopeId]
 pub fn ScopeTree::close(Self, @identity.ScopeId) -> Unit raise ScopeError
 pub fn ScopeTree::contains(Self, @identity.ScopeId) -> Bool
 pub fn ScopeTree::descendants(Self, @identity.ScopeId) -> Array[@identity.ScopeId]
+pub fn ScopeTree::event_scope(Self, @identity.ScopeId) -> @identity.ScopeId
 pub fn ScopeTree::forget(Self, @identity.ScopeId) -> Unit
+pub fn ScopeTree::interceptions(Self, @identity.ScopeId, @identity.KeyId) -> Array[@json.Json]
 pub fn ScopeTree::is_closing(Self, @identity.ScopeId) -> Bool
 pub fn ScopeTree::is_within(Self, @identity.ScopeId, @identity.ScopeId) -> Bool
 pub fn ScopeTree::new() -> Self
 pub fn ScopeTree::owner(Self, @identity.ScopeId) -> Owner?
 pub fn ScopeTree::parent(Self, @identity.ScopeId) -> @identity.ScopeId?
+pub fn ScopeTree::realm(Self, @identity.ScopeId, @identity.KeyId) -> @identity.RealmId
+pub fn ScopeTree::realms(Self, @identity.ScopeId, @identity.KeyId) -> Array[@identity.RealmId]
 pub fn ScopeTree::root(Self) -> @identity.ScopeId
 
 #derive(Eq, @debug.Debug)

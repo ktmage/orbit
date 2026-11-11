@@ -8,11 +8,18 @@ import {
   "ktmage/orbit/core/lifecycle",
   "ktmage/orbit/core/service",
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
 
 // Errors
+#derive(@debug.Debug)
+pub(all) suberror EffectFailed {
+  EffectFailed(Error, Error)
+}
+pub fn EffectFailed::to_repr(Self) -> @debug.Repr
+
 #derive(@debug.Debug)
 pub(all) suberror OrbitError {
   Closed
@@ -42,19 +49,22 @@ pub fn[I, O] Context::bail(Self, @event.BailKey[I, O], I) -> @event.Decision[O] 
 pub fn Context::child_scope(Self) -> Scope raise
 pub fn Context::effect(Self, async (CleanupContext) -> Unit) -> @lifecycle.EffectHandle raise
 pub fn[I, O] Context::emit(Self, @event.EmitKey[I, O], I) -> Array[@event.Outcome[O]] raise
-pub fn[I, O] Context::on_bail(Self, @event.BailKey[I, O], (I) -> @event.Decision[O] raise) -> @event.Subscription raise
-pub fn[I, O] Context::on_emit(Self, @event.EmitKey[I, O], (I) -> O raise) -> @event.Subscription raise
-pub fn[I, O] Context::on_parallel(Self, @event.ParallelKey[I, O], async (I) -> O) -> @event.Subscription raise
-pub fn[I, O] Context::on_serial(Self, @event.SerialKey[I, O], async (I) -> @event.Decision[O]) -> @event.Subscription raise
-pub fn[I, O] Context::on_waterfall(Self, @event.WaterfallKey[I, O], async (I, async (I) -> O) -> O) -> @event.Subscription raise
+pub fn[C] Context::install(Self, Plugin[C], C) -> (Handle, Operation) raise
+pub fn[I, O] Context::on_bail(Self, @event.BailKey[I, O], (I) -> @event.Decision[O] raise, priority? : Int32) -> @event.Subscription raise
+pub fn[I, O] Context::on_emit(Self, @event.EmitKey[I, O], (I) -> O raise, priority? : Int32) -> @event.Subscription raise
+pub fn[I, O] Context::on_parallel(Self, @event.ParallelKey[I, O], async (I) -> O, priority? : Int32) -> @event.Subscription raise
+pub fn[I, O] Context::on_serial(Self, @event.SerialKey[I, O], async (I) -> @event.Decision[O], priority? : Int32) -> @event.Subscription raise
+pub fn[I, O] Context::on_waterfall(Self, @event.WaterfallKey[I, O], async (I, async (I) -> O) -> O, priority? : Int32) -> @event.Subscription raise
 pub fn[T] Context::optional_service(Self, @service.ServiceKey[T]) -> ServiceRef[T]? raise
 pub async fn[I, O] Context::parallel(Self, @event.ParallelKey[I, O], I) -> Array[@event.Outcome[O]]
 pub fn[T] Context::provide(Self, @service.ServiceKey[T], T) -> Unit raise
 pub fn[T] Context::provide_with(Self, @service.ServiceKey[T], (ServiceContext) -> T raise) -> Unit raise
+pub fn[T] Context::publish(Self, @service.ServiceKey[T], T) -> (Handle, Operation) raise
 pub async fn[I, O] Context::serial(Self, @event.SerialKey[I, O], I) -> @event.Decision[O]
 pub fn[T] Context::service(Self, @service.ServiceKey[T]) -> ServiceRef[T] raise
 pub fn Context::spawn(Self, async () -> Unit) -> @lifecycle.TaskHandle raise
 pub async fn[I, O] Context::waterfall(Self, @event.WaterfallKey[I, O], I, async (I) -> O) -> O
+pub async fn[T] Context::with_effect(Self, async (Self) -> T) -> (T, @lifecycle.EffectHandle)
 
 #derive(@debug.Debug)
 pub(all) struct EventFailure {
@@ -123,7 +133,9 @@ pub fn Phase::to_repr(Self) -> @debug.Repr
 pub struct Plugin[C] {
   // private fields
 }
-pub fn[C] Plugin::new(async (Context, C) -> Unit, provides? : Array[@identity.KeyId], requires? : Array[@dependency.Requirement], validate? : (C) -> Unit raise) -> Self[C]
+pub fn[C] Plugin::id(Self[C]) -> @identity.KeyId
+pub fn[C] Plugin::new(async (Context, C) -> Unit, provides? : Array[@identity.KeyId], requires? : Array[@dependency.Requirement], intercepts? : Array[(@identity.KeyId, @json.Json)], validate? : (C) -> Unit raise) -> Self[C]
+pub fn[C] Plugin::validate(Self[C], C) -> Unit raise
 
 pub struct Runtime {
   // private fields
@@ -143,10 +155,17 @@ pub fn Scope::child(Self) -> Self raise
 pub fn Scope::close(Self) -> Operation
 pub fn Scope::id(Self) -> @identity.ScopeId
 pub fn[C] Scope::install(Self, Plugin[C], C) -> (Handle, Operation) raise
+pub fn[T] Scope::intercept(Self, @service.ServiceKey[T], @json.Json) -> Self raise
+pub fn[T] Scope::isolate(Self, @service.ServiceRealm[T]) -> Self raise
+pub fn Scope::isolate_events(Self) -> Self raise
+pub fn Scope::shadow(Self) -> Self raise
 
 pub struct ServiceContext {
   // private fields
 }
+pub fn[T] ServiceContext::effect(Self, () -> (T, async () -> Unit) raise) -> (T, async () -> Unit) raise
+pub fn ServiceContext::ensure(Self) -> Unit raise OrbitError
+pub fn ServiceContext::metadata(Self) -> @json.Json raise
 pub fn[T] ServiceContext::optional_service(Self, @service.ServiceKey[T]) -> ServiceRef[T]? raise
 pub fn[T] ServiceContext::service(Self, @service.ServiceKey[T]) -> ServiceRef[T] raise
 

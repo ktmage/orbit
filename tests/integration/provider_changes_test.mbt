@@ -2,7 +2,7 @@
 async test "shadow installation completes transitive consumer restart" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let x : @service.ServiceKey[Int32] = @service.ServiceKey::new("x")
     let y : @service.ServiceKey[Int32] = @service.ServiceKey::new("y")
     let p : @runtime.Plugin[Int32] = @runtime.Plugin::new(
@@ -80,7 +80,7 @@ async test "replacement waits for consumers of a newly provided service" {
 async test "starting child provider does not hide published parent" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("service")
     let entered = @manual_driver.Gate::new()
     let finish = @manual_driver.Gate::new()
@@ -122,8 +122,8 @@ async test "starting child provider does not hide published parent" {
 async test "adding a shadowed provider preserves existing consumer activation" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
-    let grandchild = child.child()
+    let child = runtime.root().shadow()
+    let grandchild = child.shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("service")
     let p : @runtime.Plugin[Int32] = @runtime.Plugin::new(
       (ctx, value) => ctx.provide(key, value),
@@ -217,8 +217,8 @@ async test "historical consumer failure does not make new provider installation 
 async test "independent shutdown branches continue after another branch fails" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let failing = runtime.root().child()
-    let independent = runtime.root().child()
+    let failing = runtime.root().shadow()
+    let independent = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("service")
     let finish = @manual_driver.Gate::new()
     let fail = Ref(true)

@@ -1,0 +1,37 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/extensions/commands"
+
+import {
+  "ktmage/orbit/core/runtime",
+  "ktmage/orbit/core/service",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror CommandError {
+  DuplicateCommand(String)
+  UnknownCommand(String)
+  InvalidPrefix
+}
+pub fn CommandError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub struct CommandRegistry {
+  // private fields
+}
+pub fn CommandRegistry::new() -> Self
+pub fn CommandRegistry::plugin(Self, @service.ServiceKey[Commands]) -> @runtime.Plugin[Unit]
+
+pub struct Commands {
+  // private fields
+}
+pub fn Commands::execute(Self, String, String) -> String raise
+pub fn Commands::names(Self) -> Array[String] raise
+pub fn Commands::register(Self, String, (String) -> String raise) -> (async () -> Unit) raise
+
+// Type aliases
+
+// Traits

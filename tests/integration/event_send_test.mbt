@@ -14,7 +14,7 @@ async test "a starting plugin sends only to already published listeners in its s
     })
     let (_, first) = runtime.root().install(receiver, 10)
     ignore(first.wait())
-    let (_, separate) = runtime.root().child().install(receiver, 100)
+    let (_, separate) = runtime.root().isolate_events().install(receiver, 100)
     ignore(separate.wait())
     let sender : @runtime.Plugin[Unit] = @runtime.Plugin::new((ctx, _) => {
       ignore(

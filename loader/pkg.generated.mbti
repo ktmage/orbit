@@ -1,0 +1,72 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ktmage/orbit/loader"
+
+import {
+  "ktmage/orbit/core/runtime",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror LoaderError {
+  InvalidEntry(String)
+  ApplyFailed(String, @runtime.OperationResult)
+  ReconcileFailed(Error, Error?)
+  RecoveryFailed(Error)
+  Closed
+}
+pub fn LoaderError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub(all) struct Entry {
+  id : String
+  plugin : @runtime.Plugin[@json.Json]
+  config : @json.Json
+  enabled : Bool
+}
+pub fn Entry::new(String, @runtime.Plugin[@json.Json], @json.Json, enabled? : Bool) -> Self
+
+#derive(@debug.Debug)
+pub(all) struct EntrySnapshot {
+  id : String
+  enabled : Bool
+  instance : @runtime.Snapshot?
+}
+pub fn EntrySnapshot::to_repr(Self) -> @debug.Repr
+
+pub struct Loader {
+  // private fields
+}
+pub async fn Loader::close(Self) -> Unit
+pub fn Loader::new(@runtime.Scope) -> Self
+pub async fn Loader::reconcile(Self, Array[Entry]) -> Unit
+pub async fn Loader::reload(Self, Array[ModuleEntry], Resolver) -> Unit
+pub fn Loader::snapshots(Self) -> Array[EntrySnapshot]
+
+pub(all) struct ModuleEntry {
+  id : String
+  module_ref : ModuleRef
+  config : @json.Json
+  enabled : Bool
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) struct ModuleRef {
+  source : String
+  revision : String
+}
+pub fn ModuleRef::equal(Self, Self) -> Bool
+pub fn ModuleRef::not_equal(Self, Self) -> Bool
+pub fn ModuleRef::to_repr(Self) -> @debug.Repr
+
+pub struct Resolver {
+  // private fields
+}
+pub fn Resolver::new(async (ModuleRef) -> @runtime.Plugin[@json.Json]) -> Self
+
+// Type aliases
+
+// Traits

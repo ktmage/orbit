@@ -3,6 +3,8 @@ pub struct Context {
   priv runtime : Runtime
   priv instance : Instance
   priv activation : Activation
+  priv effects : @lifecycle.EffectScope
+  priv nested : Bool
 }
 
 ///|
@@ -25,7 +27,9 @@ fn Context::ensure(self : Context) -> Unit raise OrbitError {
     !self.runtime.scopes.is_closing(self.instance.scope) else {
     raise Closed
   }
-  guard self.activation.normal_valid else { raise StaleContext }
+  guard self.activation.normal_valid && !self.effects.tasks().is_stopping() else {
+    raise StaleContext
+  }
 }
 
 ///|
@@ -36,9 +40,10 @@ fn CleanupContext::ensure(self : CleanupContext) -> Unit raise OrbitError {
 ///|
 fn Context::invocation(self : Context) -> @event.Invocation {
   @event.Invocation::new((body, on_cancel) => {
-    guard self.activation.normal_valid else { raise @event.DispatchCancelled }
-    match
-      self.activation.effects.tasks().run(self.runtime.driver, body, on_cancel~) {
+    guard self.activation.normal_valid && !self.effects.tasks().is_stopping() else {
+      raise @event.DispatchCancelled
+    }
+    match self.effects.tasks().run(self.runtime.driver, body, on_cancel~) {
       @lifecycle.Succeeded(_) => ()
       @lifecycle.Failed(error) => raise error
       @lifecycle.Cancelled => raise @event.DispatchCancelled

@@ -103,7 +103,7 @@ async test "cleanup retry failure reports only errors from the current attempt" 
 async test "closing the dependent with a failed cleanup lets the retained provider exchange progress" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("provider")
     let fail_cleanup = Ref(true)
     let starts : Array[Int32] = []

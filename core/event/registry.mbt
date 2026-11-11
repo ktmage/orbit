@@ -2,6 +2,8 @@
 priv struct Entry[F] {
   dispatcher : @identity.KeyId
   scope : @identity.ScopeId
+  stable_owner : @identity.InstanceId?
+  priority : Int32
   mut callback : F?
   mut order : Int64?
 }
@@ -29,6 +31,7 @@ priv struct ErasedRegistration {
 pub struct EventDispatcher {
   priv id : @identity.KeyId
   priv registrations : Map[@identity.ActivationId, Array[ErasedRegistration]]
+  priv owners : Map[@identity.ActivationId, @identity.InstanceId]
   priv active : Map[@identity.ActivationId, Unit]
   priv mut sequence : Int64
 }
@@ -49,6 +52,7 @@ pub fn EventDispatcher::new() -> EventDispatcher {
     id: @identity.KeyId::fresh(),
     registrations: Map([]),
     active: Map([]),
+    owners: Map([]),
     sequence: 0L,
   }
 }
@@ -60,11 +64,14 @@ fn[F] EventDispatcher::register(
   scope : @identity.ScopeId,
   owner : @identity.ActivationId,
   callback : F,
+  priority~ : Int32 = 0,
 ) -> Subscription {
   let entry = {
     dispatcher: self.id,
     scope,
     callback: Some(callback),
+    priority,
+    stable_owner: self.owners.get(owner),
     order: None,
   }
   let id = @identity.RegistrationId::fresh()
@@ -132,6 +139,7 @@ pub fn EventDispatcher::remove(
     (registration.remove)()
   }
   self.registrations.remove(owner)
+  self.owners.remove(owner)
 }
 
 ///|
@@ -146,7 +154,24 @@ fn[F] Registry::snapshot(
     entry.order is Some(_) &&
     entry.callback is Some(_)
   })
-  entries.sort_by(fn(a, b) { a.order.unwrap().compare(b.order.unwrap()) })
+  entries.sort_by(fn(a, b) {
+    let priority = a.priority.compare(b.priority)
+    if priority != 0 {
+      return priority
+    }
+    match (a.stable_owner, b.stable_owner) {
+      (Some(left), Some(right)) => {
+        let owner = left.compare(right)
+        if owner != 0 {
+          return owner
+        }
+      }
+      (Some(_), None) => return -1
+      (None, Some(_)) => return 1
+      (None, None) => ()
+    }
+    a.order.unwrap().compare(b.order.unwrap())
+  })
   entries
 }
 
@@ -157,4 +182,18 @@ fn[F] Entry::current(self : Entry[F]) -> F? {
   } else {
     None
   }
+}
+
+///|
+pub fn Subscription::new(remove : () -> Unit) -> Subscription {
+  { remove, }
+}
+
+///|
+pub fn EventDispatcher::set_owner(
+  self : EventDispatcher,
+  activation : @identity.ActivationId,
+  instance : @identity.InstanceId,
+) -> Unit {
+  self.owners[activation] = instance
 }

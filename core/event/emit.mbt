@@ -5,8 +5,9 @@ pub fn[I, O] EventDispatcher::on_emit(
   scope : @identity.ScopeId,
   owner : @identity.ActivationId,
   callback : (I) -> O raise,
+  priority~ : Int32 = 0,
 ) -> Subscription {
-  self.register(key.registry, scope, owner, callback)
+  self.register(key.registry, scope, owner, callback, priority~)
 }
 
 ///|

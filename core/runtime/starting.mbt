@@ -32,12 +32,19 @@ fn Runtime::begin_start(
     stopping: false,
     stop_error: None,
   }
+  self.events.set_owner(activation.id, instance.id)
   instance.activation = Some(activation)
   instance.state = Starting
   instance.missing = []
   self.dependencies.select(instance.id, resolution.selections)
   self.notify(instance)
-  let context : Context = { runtime: self, instance, activation, }
+  let context : Context = {
+    runtime: self,
+    instance,
+    activation,
+    effects: activation.effects,
+    nested: false,
+  }
   let start = instance.definition.start
   self.later(fn() {
     ignore(

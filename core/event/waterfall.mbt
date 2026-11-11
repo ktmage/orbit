@@ -30,8 +30,15 @@ pub fn[I, O] EventDispatcher::on_waterfall(
   invocation : Invocation,
   callback : async (I, async (I) -> O) -> O,
   map_error~ : (Error) -> Error = fn(error) { error },
+  priority~ : Int32 = 0,
 ) -> Subscription {
-  self.register(key.registry, scope, owner, { invocation, callback, map_error, })
+  self.register(
+    key.registry,
+    scope,
+    owner,
+    { invocation, callback, map_error, },
+    priority~,
+  )
 }
 
 ///|

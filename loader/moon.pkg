@@ -1,0 +1,10 @@
+import {
+  "ktmage/orbit/core/runtime",
+  "moonbitlang/async",
+}
+
+import {
+  "ktmage/orbit/adapters/async_driver",
+  "ktmage/orbit/core/service",
+  "ktmage/orbit/test_support/manual_driver",
+} for "test"

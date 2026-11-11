@@ -23,12 +23,12 @@ test "a later provider that closes a dependency cycle is rejected" {
   let key_a = @identity.KeyId::fresh()
   let key_b = @identity.KeyId::fresh()
   graph.put(a, tree.root(), [{ key: key_b, required: true, }])
-  providers.reserve(tree.root(), a, [key_a])
+  providers.reserve(tree, tree.root(), a, [key_a])
   graph.validate(tree, providers)
   let proposed_graph = graph.copy()
   let proposed_providers = providers.copy()
   proposed_graph.put(b, tree.root(), [{ key: key_a, required: true, }])
-  proposed_providers.reserve(tree.root(), b, [key_b])
+  proposed_providers.reserve(tree, tree.root(), b, [key_b])
   let rejected = try {
     proposed_graph.validate(tree, proposed_providers)
     false
@@ -37,7 +37,7 @@ test "a later provider that closes a dependency cycle is rejected" {
   }
   assert_true(rejected)
   graph.validate(tree, providers)
-  assert_eq(providers.get(tree.root(), key_b), None)
+  assert_eq(providers.get(tree, tree.root(), key_b), None)
 }
 
 ///|

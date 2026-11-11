@@ -23,7 +23,7 @@ pub fn Context::effect(
   dispose : async (CleanupContext) -> Unit,
 ) -> @lifecycle.EffectHandle raise {
   self.ensure()
-  self.activation.effects.add(() => dispose({ context: self, }))
+  self.effects.add(() => dispose({ context: self, }))
 }
 
 ///|
@@ -32,7 +32,7 @@ pub fn Context::spawn(
   body : async () -> Unit,
 ) -> @lifecycle.TaskHandle raise {
   self.ensure()
-  self.activation.effects
+  self.effects
   .tasks()
   .spawn(
     self.runtime.driver,
@@ -66,7 +66,7 @@ pub async fn[T] Context::acquire(
   release : async (T) -> Unit,
 ) -> T {
   self.ensure()
-  self.activation.effects.acquire(self.runtime.driver, acquire, release)
+  self.effects.acquire(self.runtime.driver, acquire, release)
 }
 
 ///|
@@ -76,7 +76,20 @@ pub fn Context::child_scope(self : Context) -> Scope raise {
     instance: self.instance.id,
     activation: self.activation.id,
   })
-  { runtime: self.runtime, id, managed: true, }
+  let scope : Scope = { runtime: self.runtime, id, managed: true, }
+  ignore(
+    self.effects.add(() => {
+      // The runtime stops owned instances before activation cleanup, so only early disposal closes them here.
+      if self.activation.normal_valid {
+        match self.runtime.observe_operation(scope.close()).wait() {
+          Succeeded(_) => ()
+          Cancelled(_, _) if !self.activation.normal_valid => ()
+          _ => raise StopFailed
+        }
+      }
+    }),
+  )
+  scope
 }
 
 ///|
@@ -84,13 +97,23 @@ pub fn[I, O] Context::on_emit(
   self : Context,
   key : @event.EmitKey[I, O],
   callback : (I) -> O raise,
+  priority~ : Int32 = 0,
 ) -> @event.Subscription raise {
   self.ensure()
-  self.runtime.events.on_emit(key, self.instance.scope, self.activation.id, input => {
-    callback(input) catch {
-      error => raise self.event_failure(key.id(), error, preserve_cancel=false)
-    }
-  })
+  self.own_subscription(
+    self.runtime.events.on_emit(
+      key,
+      self.event_scope(),
+      self.activation.id,
+      input => {
+        callback(input) catch {
+          error =>
+            raise self.event_failure(key.id(), error, preserve_cancel=false)
+        }
+      },
+      priority~,
+    ),
+  )
 }
 
 ///|
@@ -98,13 +121,23 @@ pub fn[I, O] Context::on_bail(
   self : Context,
   key : @event.BailKey[I, O],
   callback : (I) -> @event.Decision[O] raise,
+  priority~ : Int32 = 0,
 ) -> @event.Subscription raise {
   self.ensure()
-  self.runtime.events.on_bail(key, self.instance.scope, self.activation.id, input => {
-    callback(input) catch {
-      error => raise self.event_failure(key.id(), error, preserve_cancel=false)
-    }
-  })
+  self.own_subscription(
+    self.runtime.events.on_bail(
+      key,
+      self.event_scope(),
+      self.activation.id,
+      input => {
+        callback(input) catch {
+          error =>
+            raise self.event_failure(key.id(), error, preserve_cancel=false)
+        }
+      },
+      priority~,
+    ),
+  )
 }
 
 ///|
@@ -112,18 +145,22 @@ pub fn[I, O] Context::on_parallel(
   self : Context,
   key : @event.ParallelKey[I, O],
   callback : async (I) -> O,
+  priority~ : Int32 = 0,
 ) -> @event.Subscription raise {
   self.ensure()
-  self.runtime.events.on_parallel(
-    key,
-    self.instance.scope,
-    self.activation.id,
-    self.invocation(),
-    input => {
-      callback(input) catch {
-        error => raise self.event_failure(key.id(), error)
-      }
-    },
+  self.own_subscription(
+    self.runtime.events.on_parallel(
+      key,
+      self.event_scope(),
+      self.activation.id,
+      self.invocation(),
+      input => {
+        callback(input) catch {
+          error => raise self.event_failure(key.id(), error)
+        }
+      },
+      priority~,
+    ),
   )
 }
 
@@ -132,18 +169,22 @@ pub fn[I, O] Context::on_serial(
   self : Context,
   key : @event.SerialKey[I, O],
   callback : async (I) -> @event.Decision[O],
+  priority~ : Int32 = 0,
 ) -> @event.Subscription raise {
   self.ensure()
-  self.runtime.events.on_serial(
-    key,
-    self.instance.scope,
-    self.activation.id,
-    self.invocation(),
-    input => {
-      callback(input) catch {
-        error => raise self.event_failure(key.id(), error)
-      }
-    },
+  self.own_subscription(
+    self.runtime.events.on_serial(
+      key,
+      self.event_scope(),
+      self.activation.id,
+      self.invocation(),
+      input => {
+        callback(input) catch {
+          error => raise self.event_failure(key.id(), error)
+        }
+      },
+      priority~,
+    ),
   )
 }
 
@@ -152,19 +193,23 @@ pub fn[I, O] Context::on_waterfall(
   self : Context,
   key : @event.WaterfallKey[I, O],
   callback : async (I, async (I) -> O) -> O,
+  priority~ : Int32 = 0,
 ) -> @event.Subscription raise {
   self.ensure()
-  self.runtime.events.on_waterfall(
-    key,
-    self.instance.scope,
-    self.activation.id,
-    self.invocation(),
-    (input, next) => {
-      callback(input, next) catch {
-        error => raise self.event_failure(key.id(), error)
-      }
-    },
-    map_error=fn(error) { self.event_failure(key.id(), error) },
+  self.own_subscription(
+    self.runtime.events.on_waterfall(
+      key,
+      self.event_scope(),
+      self.activation.id,
+      self.invocation(),
+      (input, next) => {
+        callback(input, next) catch {
+          error => raise self.event_failure(key.id(), error)
+        }
+      },
+      map_error=fn(error) { self.event_failure(key.id(), error) },
+      priority~,
+    ),
   )
 }
 
@@ -175,7 +220,7 @@ pub fn[I, O] Context::emit(
   input : I,
 ) -> Array[@event.Outcome[O]] raise {
   self.ensure()
-  key.emit(self.runtime.events, self.instance.scope, input)
+  key.emit(self.runtime.events, self.event_scope(), input)
 }
 
 ///|
@@ -185,7 +230,7 @@ pub fn[I, O] Context::bail(
   input : I,
 ) -> @event.Decision[O] raise {
   self.ensure()
-  key.bail(self.runtime.events, self.instance.scope, input)
+  key.bail(self.runtime.events, self.event_scope(), input)
 }
 
 ///|
@@ -195,10 +240,8 @@ pub async fn[I, O] Context::parallel(
   input : I,
 ) -> Array[@event.Outcome[O]] {
   self.ensure()
-  let dispatch = key.prepare(self.runtime.events, self.instance.scope, input)
-  unwrap_completion(
-    self.activation.effects.tasks().run(self.runtime.driver, dispatch),
-  )
+  let dispatch = key.prepare(self.runtime.events, self.event_scope(), input)
+  unwrap_completion(self.effects.tasks().run(self.runtime.driver, dispatch))
 }
 
 ///|
@@ -208,10 +251,8 @@ pub async fn[I, O] Context::serial(
   input : I,
 ) -> @event.Decision[O] {
   self.ensure()
-  let dispatch = key.prepare(self.runtime.events, self.instance.scope, input)
-  unwrap_completion(
-    self.activation.effects.tasks().run(self.runtime.driver, dispatch),
-  )
+  let dispatch = key.prepare(self.runtime.events, self.event_scope(), input)
+  unwrap_completion(self.effects.tasks().run(self.runtime.driver, dispatch))
 }
 
 ///|
@@ -222,14 +263,12 @@ pub async fn[I, O] Context::waterfall(
   terminal : async (I) -> O,
 ) -> O {
   self.ensure()
-  let dispatch = key.prepare(self.runtime.events, self.instance.scope, input, value => {
+  let dispatch = key.prepare(self.runtime.events, self.event_scope(), input, value => {
     terminal(value) catch {
       error => raise self.event_failure(key.id(), error)
     }
   })
-  unwrap_completion(
-    self.activation.effects.tasks().run(self.runtime.driver, dispatch),
-  )
+  unwrap_completion(self.effects.tasks().run(self.runtime.driver, dispatch))
 }
 
 ///|
@@ -260,6 +299,11 @@ fn Context::ensure_provision(
   key : @identity.KeyId,
 ) -> Unit raise {
   self.ensure()
+  guard !self.nested else {
+    raise ContractViolation(
+      "use Context.publish for services owned by a nested effect",
+    )
+  }
   guard self.instance.state == Starting else {
     raise ContractViolation("provide is only valid during start")
   }

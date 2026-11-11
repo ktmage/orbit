@@ -6,8 +6,15 @@ pub fn[I, O] EventDispatcher::on_parallel(
   owner : @identity.ActivationId,
   invocation : Invocation,
   callback : async (I) -> O,
+  priority~ : Int32 = 0,
 ) -> Subscription {
-  self.register(key.registry, scope, owner, { invocation, callback, })
+  self.register(
+    key.registry,
+    scope,
+    owner,
+    { invocation, callback, },
+    priority~,
+  )
 }
 
 ///|

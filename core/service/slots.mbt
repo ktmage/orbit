@@ -30,6 +30,8 @@ pub(all) suberror BindingError {
   RetainedValue(@identity.KeyId)
   ReleasedReference
   CallAccessRequired
+  EffectAccessDenied
+  InvalidMetadata
 }
 
 ///|
@@ -66,11 +68,18 @@ priv enum StoredValue[T] {
 pub struct CallAccess {
   priv cleanup : Bool
   priv valid : () -> Bool
+  priv metadata : Json
+  priv own : ((async () -> Unit) -> (async () -> Unit, () -> Unit) raise)?
 }
 
 ///|
-pub fn CallAccess::new(cleanup : Bool, valid : () -> Bool) -> CallAccess {
-  { cleanup, valid, }
+pub fn CallAccess::new(
+  cleanup : Bool,
+  valid : () -> Bool,
+  metadata~ : Json = {},
+  own? : (async () -> Unit) -> (async () -> Unit, () -> Unit) raise,
+) -> CallAccess {
+  { cleanup, valid, metadata, own, }
 }
 
 ///|
@@ -81,4 +90,19 @@ pub fn CallAccess::is_cleanup(self : CallAccess) -> Bool {
 ///|
 pub fn CallAccess::is_valid(self : CallAccess) -> Bool {
   (self.valid)()
+}
+
+///|
+pub fn CallAccess::metadata(self : CallAccess) -> Json {
+  self.metadata
+}
+
+///|
+pub fn CallAccess::own(
+  self : CallAccess,
+  dispose : async () -> Unit,
+) -> (async () -> Unit, () -> Unit) raise {
+  guard self.is_valid() && !self.cleanup else { raise EffectAccessDenied }
+  guard self.own is Some(own) else { raise EffectAccessDenied }
+  own(dispose)
 }

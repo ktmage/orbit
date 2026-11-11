@@ -2,7 +2,7 @@
 async test "retrying an inherited consumer stop waits for the cleanup to return" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let shared : @service.ServiceKey[Int32] = @service.ServiceKey::new("shared")
     let downstream : @service.ServiceKey[Int32] = @service.ServiceKey::new(
       "downstream",
@@ -79,7 +79,7 @@ async test "retrying an inherited consumer stop waits for the cleanup to return"
     let independent : @runtime.Plugin[Unit] = @runtime.Plugin::new((_, _) => ())
     let (unrelated, unrelated_install) = runtime
       .root()
-      .child()
+      .shadow()
       .install(independent, ())
     let unrelated_result = unrelated_install.wait(timeout_ms=1000)
     let unrelated_state = unrelated.snapshot().state

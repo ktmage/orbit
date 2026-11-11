@@ -117,7 +117,12 @@ pub fn[C] Scope::install(
   }
   self.runtime.commit(fn() {
     self.runtime.instances[id] = instance
-    self.runtime.providers.reserve(self.id, id, definition.provides) catch {
+    self.runtime.providers.reserve(
+      self.runtime.scopes,
+      self.id,
+      id,
+      definition.provides,
+    ) catch {
       _ => abort("validated reservation failed")
     }
     self.runtime.dependencies.put(id, self.id, definition.requires)

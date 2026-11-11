@@ -48,13 +48,14 @@ pub struct EventDispatcher {
   // private fields
 }
 pub fn EventDispatcher::new() -> Self
-pub fn[I, O] EventDispatcher::on_bail(Self, BailKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> Decision[O] raise) -> Subscription
-pub fn[I, O] EventDispatcher::on_emit(Self, EmitKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> O raise) -> Subscription
-pub fn[I, O] EventDispatcher::on_parallel(Self, ParallelKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> O) -> Subscription
-pub fn[I, O] EventDispatcher::on_serial(Self, SerialKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> Decision[O]) -> Subscription
-pub fn[I, O] EventDispatcher::on_waterfall(Self, WaterfallKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I, async (I) -> O) -> O, map_error? : (Error) -> Error) -> Subscription
+pub fn[I, O] EventDispatcher::on_bail(Self, BailKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> Decision[O] raise, priority? : Int32) -> Subscription
+pub fn[I, O] EventDispatcher::on_emit(Self, EmitKey[I, O], @identity.ScopeId, @identity.ActivationId, (I) -> O raise, priority? : Int32) -> Subscription
+pub fn[I, O] EventDispatcher::on_parallel(Self, ParallelKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> O, priority? : Int32) -> Subscription
+pub fn[I, O] EventDispatcher::on_serial(Self, SerialKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I) -> Decision[O], priority? : Int32) -> Subscription
+pub fn[I, O] EventDispatcher::on_waterfall(Self, WaterfallKey[I, O], @identity.ScopeId, @identity.ActivationId, Invocation, async (I, async (I) -> O) -> O, map_error? : (Error) -> Error, priority? : Int32) -> Subscription
 pub fn EventDispatcher::publish(Self, @identity.ActivationId) -> Unit
 pub fn EventDispatcher::remove(Self, @identity.ActivationId) -> Unit
+pub fn EventDispatcher::set_owner(Self, @identity.ActivationId, @identity.InstanceId) -> Unit
 pub fn EventDispatcher::withdraw(Self, @identity.ActivationId) -> Unit
 
 pub struct Invocation {
@@ -92,6 +93,7 @@ pub async fn[I, O] SerialKey::serial(Self[I, O], EventDispatcher, @identity.Scop
 pub struct Subscription {
   // private fields
 }
+pub fn Subscription::new(() -> Unit) -> Self
 pub fn Subscription::remove(Self) -> Unit
 
 pub struct WaterfallKey[I, O] {

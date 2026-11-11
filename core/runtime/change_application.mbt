@@ -51,7 +51,7 @@ fn Runtime::activate_change(self : Runtime, change : Change) -> Unit {
           reserved.push(key)
         }
       }
-      self.providers.reserve(instance.scope, id, reserved) catch {
+      self.providers.reserve(self.scopes, instance.scope, id, reserved) catch {
         _ => abort("validated replacement reservation failed")
       }
       self.dependencies.plan(id, instance.scope, definition.requires)
@@ -88,7 +88,7 @@ fn Runtime::apply_change(self : Runtime, change : Change) -> Unit {
         continue
       }
     }
-    self.providers.reserve(instance.scope, id, definition.provides) catch {
+    self.providers.reserve(self.scopes, instance.scope, id, definition.provides) catch {
       _ => abort("validated replacement failed")
     }
     self.dependencies.put(id, instance.scope, definition.requires)

@@ -2,7 +2,7 @@
 async test "queued shadow registration starts only after the overlapping consumer change" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("provider")
     let entered = @manual_driver.Gate::new()
     let release = @manual_driver.Gate::new()
@@ -38,7 +38,7 @@ async test "queued shadow registration starts only after the overlapping consume
 async test "a nearer provider waiting for a missing dependency preserves the active fallback consumer" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("provider")
     let missing : @service.ServiceKey[Int32] = @service.ServiceKey::new(
       "missing",
@@ -125,7 +125,7 @@ async test "provider removal proceeds when a preempted consumer replacement fail
 async test "a replacement dropping a key does not block an independent registration with a transient cycle" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let unrelated = runtime.root().child()
+    let unrelated = runtime.root().shadow()
     let old_key : @service.ServiceKey[Int32] = @service.ServiceKey::new("old")
     let consumer_key : @service.ServiceKey[Int32] = @service.ServiceKey::new(
       "consumer",
@@ -185,7 +185,7 @@ async test "a replacement dropping a key does not block an independent registrat
 async test "registration waits for a consumer whose binding changes indirectly through a newly available provider" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("provider")
     let trigger : @service.ServiceKey[Int32] = @service.ServiceKey::new(
       "trigger",
@@ -246,7 +246,7 @@ async test "registration waits for a consumer whose binding changes indirectly t
 async test "a failed nearer provider leaves the published fallback consumer running" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("value")
     let base : @runtime.Plugin[Unit] = @runtime.Plugin::new(
       (ctx, _) => ctx.provide(key, 1),
@@ -287,7 +287,7 @@ async test "a failed nearer provider leaves the published fallback consumer runn
 async test "a queued update applies after the consumer switches to a newly published provider" {
   @async_driver.with_driver(driver => {
     let runtime = @runtime.Runtime::new(driver)
-    let child = runtime.root().child()
+    let child = runtime.root().shadow()
     let key : @service.ServiceKey[Int32] = @service.ServiceKey::new("provider")
     let entered = @manual_driver.Gate::new()
     let release = @manual_driver.Gate::new()

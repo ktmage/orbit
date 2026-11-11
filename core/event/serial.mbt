@@ -5,8 +5,9 @@ pub fn[I, O] EventDispatcher::on_bail(
   scope : @identity.ScopeId,
   owner : @identity.ActivationId,
   callback : (I) -> Decision[O] raise,
+  priority~ : Int32 = 0,
 ) -> Subscription {
-  self.register(key.registry, scope, owner, callback)
+  self.register(key.registry, scope, owner, callback, priority~)
 }
 
 ///|
@@ -34,8 +35,15 @@ pub fn[I, O] EventDispatcher::on_serial(
   owner : @identity.ActivationId,
   invocation : Invocation,
   callback : async (I) -> Decision[O],
+  priority~ : Int32 = 0,
 ) -> Subscription {
-  self.register(key.registry, scope, owner, { invocation, callback, })
+  self.register(
+    key.registry,
+    scope,
+    owner,
+    { invocation, callback, },
+    priority~,
+  )
 }
 
 ///|

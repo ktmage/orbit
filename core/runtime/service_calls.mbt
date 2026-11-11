@@ -21,7 +21,7 @@ pub async fn[T, R] ServiceRef::call(
   let caller = if self.cleanup {
     self.context.activation.cleanup_calls
   } else {
-    self.context.activation.effects.tasks()
+    self.context.effects.tasks()
   }
   unwrap_completion(
     caller.run(runtime.driver, () => {
@@ -31,7 +31,33 @@ pub async fn[T, R] ServiceRef::call(
           defer {
             open.val = false
           }
-          let access = @service.CallAccess::new(self.cleanup, fn() { open.val })
+          let layers = self.context.instance.definition.intercepts
+            .filter(fn(entry) { entry.0 == self.key.id() })
+            .map(fn(entry) { entry.1 })
+          layers.append(
+            runtime.scopes.interceptions(
+              self.context.instance.scope,
+              self.key.id(),
+            ),
+          )
+          let access = @service.CallAccess::new(
+            self.cleanup,
+            fn() { open.val },
+            metadata=self.key.metadata(layers),
+            own=dispose => {
+              match self.access {
+                Some(parent) => parent.own(dispose)
+                None => {
+                  self.context.ensure()
+                  let handle = self.context.effects.add(dispose)
+                  (
+                    () => handle.dispose(),
+                    fn() { handle.unregister() catch { _ => () } },
+                  )
+                }
+              }
+            },
+          )
           body(self.binding.read_with(self.key, access))
         }),
       )

@@ -75,6 +75,22 @@ pub fn OperationId::op_lt(Self, Self) -> Bool
 pub fn OperationId::to_repr(Self) -> @debug.Repr
 
 #derive(Compare, Eq, Hash, @debug.Debug)
+pub struct RealmId {
+  // private fields
+}
+pub fn RealmId::compare(Self, Self) -> Int32
+pub fn RealmId::equal(Self, Self) -> Bool
+pub fn RealmId::fresh() -> Self
+pub fn RealmId::hash(Self) -> Int32
+pub fn RealmId::hash_combine(Self, Hasher) -> Unit
+pub fn RealmId::not_equal(Self, Self) -> Bool
+pub fn RealmId::op_ge(Self, Self) -> Bool
+pub fn RealmId::op_gt(Self, Self) -> Bool
+pub fn RealmId::op_le(Self, Self) -> Bool
+pub fn RealmId::op_lt(Self, Self) -> Bool
+pub fn RealmId::to_repr(Self) -> @debug.Repr
+
+#derive(Compare, Eq, Hash, @debug.Debug)
 pub struct RegistrationId {
   // private fields
 }
